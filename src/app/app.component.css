@@ -1,0 +1,9 @@
+main {
+  position: fixed;
+  width: -webkit-calc(100% - 200px);
+  width: -moz-calc(100% - 200px);
+  width: calc(100% - 200px);
+  height: 100%;
+  left: 200px;
+  top: 0px;
+}

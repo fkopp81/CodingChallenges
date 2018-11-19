@@ -1,0 +1,17 @@
+<h1>Decrease Integer</h1>
+<div>
+  <p>What is the minimal number of steps to decrease a given integer to 1, if you can decrease it on each step by
+    either of the following two rules:</p>
+  <ul>
+    <li>Decrease the integer by one, or</li>
+    <li>if the integer is the product of two numbers, set the integer to the larger of a or b</li>
+  </ul>
+  <p>Example: 21 -> 7 -> 6 -> 3 -> 2 -> 1</p>
+</div>
+<form [formGroup]="form321">
+  <label>Integer:
+    <input type="number" formControlName="integer" min="1" required>
+  </label>
+  <button type="submit" (click)="solve(form321.value)">Solve</button>
+</form>
+<div>Smallest number of steps: {{steps}}</div>
