@@ -8,11 +8,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class UniqueLettersWindowComponent implements OnInit
 {
+  constructor() { }
   subString = ''
+
   uniqueLettersWindowForm = new FormGroup({
     string: new FormControl('', Validators.required)
   })
-  constructor() { }
+  subStringLength() { return Array.from(this.subString).length }
 
   ngOnInit()
   {
@@ -20,26 +22,22 @@ export class UniqueLettersWindowComponent implements OnInit
 
   solve(formValue)
   {
-    const string: Array<string> = [...formValue.string]
-    console.log(formValue)
-    const uniqueChars = this.uniqueChars(string)
-    console.log('uniqueChars', uniqueChars)
-    if (uniqueChars.size === string.length)
+    const charArray: Array<string> = Array.from(formValue.string)
+    console.log(formValue, charArray)
+    const missingChars = this.uniqueChars(charArray)
+    if (missingChars.size === charArray.length)
     {
       this.subString = formValue.string
       return
     }
     const windows: Array<[number, number, Array<string>]> = []
-    const missingChars = new Set(uniqueChars)
     let prevWindow: [number, number, Array<string>]
 
     // Get first window
-    missingChars.delete(string[0])
-    for (let endChar = 1; endChar < string.length; endChar++)
+    missingChars.delete(charArray[0])
+    for (let endChar = 0; endChar < charArray.length; endChar++)
     {
-      const subStringCandidate: Array<string> = string.slice(0, endChar + 1)
-      // tslint:disable-next-line:prefer-const
-      // for (let value of missingChars)
+      const subStringCandidate: Array<string> = charArray.slice(0, endChar + 1)
       const missingCharsValues = missingChars.values()
       for (let element = missingCharsValues.next(); !element.done;
         element = missingCharsValues.next())
@@ -60,24 +58,24 @@ export class UniqueLettersWindowComponent implements OnInit
       }
     }
     for (let startChar = 1;
-      startChar < string.length;
+      startChar < charArray.length;
       startChar++)
     {
       let newWindow: [number, number, Array<string>]
       const prevEndChar = prevWindow[1]
-      const movedSubstring = string.slice(startChar, prevEndChar + 1)
-      const removedChar = string[startChar - 1]
+      const movedSubstring = charArray.slice(startChar, prevEndChar + 1)
+      const removedChar = charArray[startChar - 1]
       console.log('startChar: ', startChar, movedSubstring, removedChar)
       if (movedSubstring.includes(removedChar))
       {
         newWindow = [startChar, prevEndChar, movedSubstring]
       } else
       {
-        for (let endChar = prevEndChar + 1; endChar < string.length; endChar++)
+        for (let endChar = prevEndChar + 1; endChar < charArray.length; endChar++)
         {
-          if (string[endChar] === removedChar)
+          if (charArray[endChar] === removedChar)
           {
-            newWindow = [startChar, endChar, string.slice(startChar,
+            newWindow = [startChar, endChar, charArray.slice(startChar,
               endChar + 1)]
             continue
           }
@@ -95,10 +93,10 @@ export class UniqueLettersWindowComponent implements OnInit
     }
     windows.sort((a, b) => a[2].length - b[2].length)
     console.log('windows', windows)
-    this.subString = String(windows[0][2])
+    this.subString = String(windows[0][2].join(''))
   }
 
-  uniqueChars(string): Set<string>
+  uniqueChars(string: Array<string>): Set<string>
   {
     return new Set([...string])
   }
