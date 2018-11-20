@@ -22,6 +22,8 @@ export class UniqueLettersWindowComponent implements OnInit
 
   solve(formValue)
   {
+    // charArray for better unicode handling
+    // https://flaviocopes.com/javascript-unicode/
     const charArray: Array<string> = Array.from(formValue.string)
     const missingChars = this.uniqueChars(charArray)
     if (missingChars.size === charArray.length)
@@ -30,8 +32,9 @@ export class UniqueLettersWindowComponent implements OnInit
       return
     }
     const windows: Array<[number, number, Array<string>]> = []
-    let prevWindow: [number, number, Array<string>]
+    let letterWindow: [number, number, Array<string>]
     let subStringCandidate: Array<string> = []
+
     // Get first window
     missingChars.delete(charArray[0])
     for (let endIndex = 0; endIndex < charArray.length; endIndex++)
@@ -41,25 +44,25 @@ export class UniqueLettersWindowComponent implements OnInit
       if (missingChars.has(endChar)) { missingChars.delete(endChar) }
       if (missingChars.size === 0)
       {
-        prevWindow = [0, endIndex, subStringCandidate]
-        windows.push(prevWindow)
-        console.log('first Window', prevWindow)
+        letterWindow = [0, endIndex, subStringCandidate]
+        windows.push(letterWindow)
+        console.log('first Window', letterWindow)
         break
       }
     }
-    // Move startIndex forward and get new windows
+
+    // Move startIndex forward and get further windows
     for (let startIndex = 1;
       startIndex < charArray.length;
       startIndex++)
     {
-      let newWindow: [number, number, Array<string>]
-      const prevEndIndex = prevWindow[1]
-      const prevSubString = prevWindow[2]
-      subStringCandidate = prevSubString.slice(1)
-      const removedChar = prevSubString[0]
+      const prevEndIndex = letterWindow[1]
+      subStringCandidate = [...letterWindow[2]]
+      const removedChar = subStringCandidate.splice(0, 1)[0]
+      letterWindow = undefined
       if (subStringCandidate.includes(removedChar))
       {
-        newWindow = [startIndex, prevEndIndex, subStringCandidate]
+        letterWindow = [startIndex, prevEndIndex, subStringCandidate]
       } else
       {
         for (let endIndex = prevEndIndex + 1; endIndex < charArray.length;
@@ -69,20 +72,19 @@ export class UniqueLettersWindowComponent implements OnInit
           subStringCandidate.push(endChar)
           if (endChar === removedChar)
           {
-            newWindow = [startIndex, endIndex, subStringCandidate]
+            letterWindow = [startIndex, endIndex, subStringCandidate]
             break
           }
         }
       }
-      if (!newWindow)
+      if (!letterWindow)
       {
-        console.log('Stopping: No valid subString found beginning at',
+        console.log('Stopping: No valid subString found at startIndex',
           startIndex)
         break
       }
       // console.log('startChar', startIndex, 'newWindow', newWindow)
-      windows.push(newWindow)
-      prevWindow = newWindow
+      windows.push(letterWindow)
     }
     windows.sort((a, b) => a[2].length - b[2].length)
     console.log('windows', windows)

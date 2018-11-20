@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 
 @Component({
-  selector: 'app-decreaseInteger',
+  selector: 'app-decrease-integer',
   templateUrl: './decreaseInteger.component.html',
   styleUrls: ['./decreaseInteger.component.css']
 })
