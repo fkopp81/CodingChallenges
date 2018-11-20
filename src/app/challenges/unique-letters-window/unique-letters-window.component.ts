@@ -23,7 +23,6 @@ export class UniqueLettersWindowComponent implements OnInit
   solve(formValue)
   {
     const charArray: Array<string> = Array.from(formValue.string)
-    console.log(formValue, charArray)
     const missingChars = this.uniqueChars(charArray)
     if (missingChars.size === charArray.length)
     {
@@ -32,62 +31,56 @@ export class UniqueLettersWindowComponent implements OnInit
     }
     const windows: Array<[number, number, Array<string>]> = []
     let prevWindow: [number, number, Array<string>]
-
+    let subStringCandidate: Array<string> = []
     // Get first window
     missingChars.delete(charArray[0])
-    for (let endChar = 0; endChar < charArray.length; endChar++)
+    for (let endIndex = 0; endIndex < charArray.length; endIndex++)
     {
-      const subStringCandidate: Array<string> = charArray.slice(0, endChar + 1)
-      const missingCharsValues = missingChars.values()
-      for (let element = missingCharsValues.next(); !element.done;
-        element = missingCharsValues.next())
-      {
-        const { value } = element
-        if (subStringCandidate.includes(value))
-        {
-          missingChars.delete(value)
-        }
-      }
-      console.log(`[0,${endChar}]`, subStringCandidate, missingChars)
+      const endChar = charArray[endIndex]
+      subStringCandidate.push(endChar)
+      if (missingChars.has(endChar)) { missingChars.delete(endChar) }
       if (missingChars.size === 0)
       {
-        prevWindow = [0, endChar, subStringCandidate]
+        prevWindow = [0, endIndex, subStringCandidate]
         windows.push(prevWindow)
-        console.log('first Window', prevWindow, subStringCandidate)
+        console.log('first Window', prevWindow)
         break
       }
     }
-    for (let startChar = 1;
-      startChar < charArray.length;
-      startChar++)
+    // Move startIndex forward and get new windows
+    for (let startIndex = 1;
+      startIndex < charArray.length;
+      startIndex++)
     {
       let newWindow: [number, number, Array<string>]
-      const prevEndChar = prevWindow[1]
-      const movedSubstring = charArray.slice(startChar, prevEndChar + 1)
-      const removedChar = charArray[startChar - 1]
-      console.log('startChar: ', startChar, movedSubstring, removedChar)
-      if (movedSubstring.includes(removedChar))
+      const prevEndIndex = prevWindow[1]
+      const prevSubString = prevWindow[2]
+      subStringCandidate = prevSubString.slice(1)
+      const removedChar = prevSubString[0]
+      if (subStringCandidate.includes(removedChar))
       {
-        newWindow = [startChar, prevEndChar, movedSubstring]
+        newWindow = [startIndex, prevEndIndex, subStringCandidate]
       } else
       {
-        for (let endChar = prevEndChar + 1; endChar < charArray.length; endChar++)
+        for (let endIndex = prevEndIndex + 1; endIndex < charArray.length;
+          endIndex++)
         {
-          if (charArray[endChar] === removedChar)
+          const endChar = charArray[endIndex]
+          subStringCandidate.push(endChar)
+          if (endChar === removedChar)
           {
-            newWindow = [startChar, endChar, charArray.slice(startChar,
-              endChar + 1)]
-            continue
+            newWindow = [startIndex, endIndex, subStringCandidate]
+            break
           }
         }
       }
       if (!newWindow)
       {
         console.log('Stopping: No valid subString found beginning at',
-          startChar)
+          startIndex)
         break
       }
-      console.log('startChar', startChar, 'newWindow', newWindow)
+      // console.log('startChar', startIndex, 'newWindow', newWindow)
       windows.push(newWindow)
       prevWindow = newWindow
     }

@@ -4,5 +4,6 @@ nav {
   height: 100%;
   left: 0px;
   top: 0px;
-  background-color: cyan
+  background-color: cyan;
+  z-index: -100;
 }
