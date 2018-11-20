@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { DecreaseIntegerComponent } from './challenges/decreaseInteger/decreaseInteger.component';
+import { UniqueLettersWindowComponent } from './challenges/unique-letters-window/unique-letters-window.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    DecreaseIntegerComponent
+    DecreaseIntegerComponent,
+    UniqueLettersWindowComponent
   ],
   imports: [
     BrowserModule,

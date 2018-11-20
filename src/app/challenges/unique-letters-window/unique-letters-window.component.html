@@ -1,0 +1,11 @@
+<h1>Unique Letters Window</h1>
+<p>
+  Find the length of the shortest substring of a given string that contains all the characters of the string.
+</p>
+<form [formGroup]="uniqueLettersWindowForm">
+  <label>String: <input type="text" formControlName="string" required></label>
+  <button type="submit" (click)="solve(uniqueLettersWindowForm.value)">
+    Solve
+  </button>
+</form>
+<div>Unique Letters Window: "{{subString}}" - {{subString.length}}</div>
